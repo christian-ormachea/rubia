@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citas Disponibles 💕</title>
+    <link rel="stylesheet" href="{% static 'citas/style.css' %}">
+</head>
+<body>
+    <div class="contenedor-calendario">
+        <h1>Citas Disponibles</h1>
+        <div class="nav-mes">
+            <a href="{% url 'calendario' %}?anio={{ anio_mes_anterior }}&mes={{ mes_anterior }}" class="boton-nav">&larr;</a>
+            <h2>{{ nombre_mes }} {{ anio }}</h2>
+            <a href="{% url 'calendario' %}?anio={{ anio_mes_siguiente }}&mes={{ mes_siguiente }}" class="boton-nav">&rarr;</a>
+        </div>
+
+        <table class="calendario">
+            <thead>
+                <tr>
+                    {% for dia in dias_semana %}
+                        <th>{{ dia }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for semana in semanas %}
+                <tr>
+                    {% for dia in semana %}
+                        {% if dia is None %}
+                            <td class="dia-vacio"></td>
+                        {% else %}
+                            <td class="dia-con-citas" onclick="abrirModal({{ dia.numero }})">
+
+                                <span class="numero-dia">{{ dia.numero }}</span>
+
+                                {% for cita in dia.citas %}
+                                    <div class="mini-cita">{{ cita.get_plan_display }}</div>
+                                {% endfor %}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="modal-fondo" class="modal-fondo" onclick="cerrarModalSiEsFondo(event)">
+        <div class="modal-caja">
+            <button type="button" class="modal-cerrar" onclick="cerrarModal()">&times;</button>
+            <h3 id="modal-titulo">Agendar cita</h3>
+
+            <form method="POST" action="{% url 'agregar_cita' %}">
+                {% csrf_token %}
+                <input type="hidden" name="anio" value="{{ anio }}">
+                <input type="hidden" name="mes" value="{{ mes }}">
+                <input type="hidden" name="fecha" id="input-fecha" value="">
+
+                <label>Título</label>
+                <input type="text" name="titulo" required placeholder="Ej: Noche de películas">
+
+                <label>Plan</label>
+                <select name="plan" required>
+                    {% for valor, texto in planes %}
+                        <option value="{{ valor }}">{{ texto }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>Hora (opcional)</label>
+                <input type="time" name="hora">
+
+                <label>Descripción (opcional)</label>
+                <textarea name="descripcion" rows="3" placeholder="Detalles del plan..."></textarea>
+
+                <button type="submit" class="boton-agendar">Agendar 💙</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        function abrirModal(dia) {
+            const anio = {{ anio }};
+            const mes = {{ mes }};
+            const fecha = `${anio}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+
+            document.getElementById('input-fecha').value = fecha;
+            document.getElementById('modal-titulo').textContent = `Agendar cita - ${dia}/${mes}/${anio}`;
+            document.getElementById('modal-fondo').classList.add('activo');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-fondo').classList.remove('activo');
+        }
+
+        function cerrarModalSiEsFondo(evento) {
+            if (evento.target.id === 'modal-fondo') {
+                cerrarModal();
+            }
+        }
+    </script>
+</body>
+</html>
