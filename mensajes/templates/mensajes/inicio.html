@@ -9,13 +9,67 @@
 </head>
 <body>
     <div class="contenedor-inicio">
-        {% if mensaje %}
-            <p class="mensaje-lindo">{{ mensaje.texto }}</p>
-        {% else %}
-            <p class="mensaje-lindo">Todavía no hay mensajes cargados 💭</p>
-        {% endif %}
+        <h1>Nuestros momentos</h1>
 
+        <div class="carrusel-contenedor">
+            <div class="carrusel-pista" id="carrusel-pista">
+                {% for mensaje in mensajes %}
+                    <div class="card-recuerdo">
+                        {% if mensaje.imagen %}
+                            <img src="{{ mensaje.imagen.url }}" alt="{{ mensaje.texto }}" class="card-imagen">
+                        {% endif %}
+                        <p class="card-texto">{{ mensaje.texto }}</p>
+                        {% if mensaje.descripcion %}
+                            <p class="card-descripcion">{{ mensaje.descripcion }}</p>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p class="mensaje-lindo">Todavía no hay recuerdos cargados 💭</p>
+                {% endfor %}
+            </div>
+
+            {% if mensajes %}
+                <button type="button" class="carrusel-flecha carrusel-flecha-izq" onclick="moverCarrusel(-1)">&larr;</button>
+                <button type="button" class="carrusel-flecha carrusel-flecha-der" onclick="moverCarrusel(1)">&rarr;</button>
+                <div class="carrusel-puntos" id="carrusel-puntos"></div>
+            {% endif %}
+        </div>
+        
         <a href="{% url 'calendario' %}" class="boton-ir-calendario">Ver calendario</a>
     </div>
+
+    <script>
+        const pista = document.getElementById('carrusel-pista');
+        const contenedorPuntos = document.getElementById('carrusel-puntos');
+        const totalCards = pista ? pista.children.length : 0;
+        let indiceActual = 0;
+
+        if (totalCards > 0) {
+            for (let i = 0; i < totalCards; i++) {
+                const punto = document.createElement('span');
+                punto.classList.add('punto');
+                if (i === 0) punto.classList.add('activo');
+                punto.onclick = () => irACard(i);
+                contenedorPuntos.appendChild(punto);
+            }
+        }
+
+        function actualizarCarrusel() {
+            pista.style.transform = `translateX(-${indiceActual * 100}%)`;
+            document.querySelectorAll('.punto').forEach((punto, i) => {
+                punto.classList.toggle('activo', i === indiceActual);
+            });
+        }
+
+        function moverCarrusel(direccion) {
+            indiceActual = (indiceActual + direccion + totalCards) % totalCards;
+            actualizarCarrusel();
+        }
+
+        function irACard(indice) {
+            indiceActual = indice;
+            actualizarCarrusel();
+        }
+    </script>
 </body>
 </html>
