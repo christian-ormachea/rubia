@@ -12,20 +12,22 @@
         <h1>Nuestros momentos</h1>
 
         <div class="carrusel-contenedor">
-            <div class="carrusel-pista" id="carrusel-pista">
-                {% for mensaje in mensajes %}
-                    <div class="card-recuerdo">
-                        {% if mensaje.imagen %}
-                            <img src="{{ mensaje.imagen.url }}" alt="{{ mensaje.texto }}" class="card-imagen">
-                        {% endif %}
-                        <p class="card-texto">{{ mensaje.texto }}</p>
-                        {% if mensaje.descripcion %}
-                            <p class="card-descripcion">{{ mensaje.descripcion }}</p>
-                        {% endif %}
-                    </div>
-                {% empty %}
-                    <p class="mensaje-lindo">Todavía no hay recuerdos cargados 💭</p>
-                {% endfor %}
+            <div class="carrusel-viewport">
+                <div class="carrusel-pista" id="carrusel-pista">
+                    {% for mensaje in mensajes %}
+                        <div class="card-recuerdo">
+                            {% if mensaje.imagen %}
+                                <img src="{{ mensaje.imagen.url }}" alt="{{ mensaje.texto }}" class="card-imagen">
+                            {% endif %}
+                            <p class="card-texto">{{ mensaje.texto }}</p>
+                            {% if mensaje.descripcion %}
+                                <p class="card-descripcion">{{ mensaje.descripcion }}</p>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <p class="mensaje-lindo">Todavía no hay recuerdos cargados 💭</p>
+                    {% endfor %}
+                </div>
             </div>
 
             {% if mensajes %}

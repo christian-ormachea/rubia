@@ -299,10 +299,14 @@ h2 {
 
 .carrusel-pista {
     display: flex;
+    border-radius: 14px;
+    transition: transform 0.4s ease;
+}
+
+.carrusel-viewport {
     overflow: hidden;
     border-radius: 14px;
 }
-
 .card-recuerdo {
     flex: 0 0 100%;
     background: var(--fondo-tarjeta);
@@ -310,7 +314,6 @@ h2 {
     border-radius: 14px;
     overflow: hidden;
     text-align: left;
-    transition: transform 0.4s ease;
 }
 
 .card-imagen {
