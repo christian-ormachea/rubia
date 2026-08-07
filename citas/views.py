@@ -64,13 +64,33 @@ def calendario(request):
 
 def agregar_cita(request):
     if request.method == 'POST':
-        Cita.objects.create(
-            titulo=request.POST['titulo'],
-            descripcion=request.POST.get('descripcion', ''),
-            fecha=request.POST['fecha'],
-            hora=request.POST.get('hora') or None,
-            plan=request.POST['plan'],
-        )
+        cita_id = request.POST.get('cita_id')
+        if cita_id:
+            cita = Cita.objects.get(id=cita_id)
+            cita.titulo = request.POST['titulo']
+            cita.descripcion = request.POST.get('descripcion', '')
+            cita.fecha = request.POST['fecha']
+            cita.hora = request.POST.get('hora') or None
+            cita.plan = request.POST['plan']
+            cita.save()
+        else:
+            Cita.objects.create(
+                titulo=request.POST['titulo'],
+                descripcion=request.POST.get('descripcion', ''),
+                fecha=request.POST['fecha'],
+                hora=request.POST.get('hora') or None,
+                plan=request.POST['plan'],
+            )
+
     anio = request.POST.get('anio', '')
     mes = request.POST.get('mes', '')
+    return redirect(f'/calendario/?anio={anio}&mes={mes}')
+
+##Se define la vista para eliminar la cita cuando se clickea una fecha que tiene una cita agendada.
+def eliminar_cita(request, cita_id):
+    cita = Cita.objects.get_object_or_404(cita_id)
+    cita.delete()
+    anio = request.POST.get('anio', '')
+    mes = request.POST.get('mes', '')
+
     return redirect(f'/calendario/?anio={anio}&mes={mes}')
