@@ -20,7 +20,10 @@
             <thead>
                 <tr>
                     {% for dia in dias_semana %}
-                        <th>{{ dia }}</th>
+                        <th>
+                            <span class="dia-completo">{{ dia }}</span>
+                            <span class="dia-abrev">{{ dia|slice:":3" }}</span>
+                        </th>
                     {% endfor %}
                 </tr>
             </thead>
@@ -43,7 +46,8 @@
                                         data-hora="{{ cita.hora|default_if_none:'' }}"
                                         data-descripcion="{{ cita.descripcion|escapejs }}"
                                         data-fecha="{{ cita.fecha|date:"Y-m-d" }}">
-                                        {{ cita.get_plan_display }}
+                                            <span class="mini-cita-texto">{{ cita.get_plan_display }}</span>
+                                            <span class="mini-cita-emoji">{{ cita.get_plan_display|slice:":1" }}</span>
                                     </div>
                                 {% endfor %}
                             </td>
