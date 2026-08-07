@@ -189,6 +189,7 @@
 
             citasDelDia.forEach(function (chip) {
                 const item = document.createElement('li');
+                item.classList.add('item-cita-menu');
                 item.textContent = `${chip.dataset.planTexto} — ${chip.dataset.titulo}`;
                 item.onclick = function () {
                     abrirCitaDesdeElemento(chip);
