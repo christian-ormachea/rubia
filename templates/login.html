@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresar 💙</title>
+    <link rel="stylesheet" href="{% static 'citas/style.css' %}">
+</head>
+<body>
+    <div class="contenedor-inicio">
+        <div class="modal-caja" style="max-width: 340px;">
+            <h3>Ingresá para ver las citas</h3>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <label>Usuario</label>
+                <input type="text" name="username" required autofocus>
+
+                <label>Contraseña</label>
+                <input type="password" name="password" required>
+
+                {% if form.errors %}
+                    <p style="color: #ff5a5a; font-size: 0.85rem; margin-top: 10px;">
+                        Usuario o contraseña incorrectos.
+                    </p>
+                {% endif %}
+
+                <button type="submit" class="boton-agendar">Ingresar 💙</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

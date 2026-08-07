@@ -9,7 +9,15 @@
 </head>
 <body>
     <div class="contenedor-calendario">
+        
         <h1>Citas Disponibles</h1>
+
+        <p style="text-align:center; margin-top:-4px;">
+            <a href="{% url 'logout' %}" class="enlace-salir">
+                Cerrar sesión ({{ request.user.username }})
+            </a>
+        </p>
+
         <div class="nav-mes">
             <a href="{% url 'calendario' %}?anio={{ anio_mes_anterior }}&mes={{ mes_anterior }}" class="boton-nav">&larr;</a>
             <h2>{{ nombre_mes }} {{ anio }}</h2>
