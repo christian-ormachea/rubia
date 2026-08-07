@@ -25,7 +25,7 @@ def calendario(request):
 
     cal = calendar.Calendar(firstweekday=6)
     dias_del_mes = cal.monthdayscalendar(anio, mes)
-    citas_del_mes = Cita.objects.filter(fecha__year=anio, fecha__month=mes)
+    citas_del_mes = Cita.objects.filter(fecha__year=anio, fecha__month=mes).order_by('hora')
     citas_por_dia = {}
 
     for cita in citas_del_mes:

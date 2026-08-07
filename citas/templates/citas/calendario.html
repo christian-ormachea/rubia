@@ -31,12 +31,20 @@
                         {% if dia is None %}
                             <td class="dia-vacio"></td>
                         {% else %}
-                            <td class="dia-con-citas" onclick="abrirModal({{ dia.numero }})">
-
+                            <td class="dia-con-citas" onclick="gestionarDia(this, {{ dia.numero }})">
                                 <span class="numero-dia">{{ dia.numero }}</span>
 
                                 {% for cita in dia.citas %}
-                                    <div class="mini-cita">{{ cita.get_plan_display }}</div>
+                                    <div class="mini-cita"
+                                        data-id="{{ cita.id }}"
+                                        data-titulo="{{ cita.titulo|escapejs }}"
+                                        data-plan="{{ cita.plan }}"
+                                        data-plan-texto="{{ cita.get_plan_display }}"
+                                        data-hora="{{ cita.hora|default_if_none:'' }}"
+                                        data-descripcion="{{ cita.descripcion|escapejs }}"
+                                        data-fecha="{{ cita.fecha|date:"Y-m-d" }}">
+                                        {{ cita.get_plan_display }}
+                                    </div>
                                 {% endfor %}
                             </td>
                         {% endif %}
@@ -51,32 +59,49 @@
         <div class="modal-caja">
             <button type="button" class="modal-cerrar" onclick="cerrarModal()">&times;</button>
             <h3 id="modal-titulo">Agendar cita</h3>
+            
 
-            <form method="POST" action="{% url 'agregar_cita' %}">
+            <div id="menu-dia">
+                <ul id="lista-citas-dia"></ul>
+                <button type="button" class="boton-agendar" onclick="mostrarFormularioNuevo()">+ Agregar nueva cita</button>
+            </div>
+
+            <form method="POST" action="{% url 'agregar_cita' %}" id="menu-dia-form">
                 {% csrf_token %}
                 <input type="hidden" name="anio" value="{{ anio }}">
                 <input type="hidden" name="mes" value="{{ mes }}">
                 <input type="hidden" name="fecha" id="input-fecha" value="">
+                <input type="hidden" name="cita_id" id="input-cita-id" value="">
 
                 <label>Título</label>
-                <input type="text" name="titulo" required placeholder="Ej: Noche de películas">
+                <input type="text" name="titulo" id="input-titulo" required placeholder="Ej: Noche de películas">
 
                 <label>Plan</label>
-                <select name="plan" required>
+                <select name="plan" id="input-plan" required>
                     {% for valor, texto in planes %}
                         <option value="{{ valor }}">{{ texto }}</option>
                     {% endfor %}
                 </select>
 
                 <label>Hora (opcional)</label>
-                <input type="time" name="hora">
+                <input type="time" name="hora" id="input-hora">
 
                 <label>Descripción (opcional)</label>
-                <textarea name="descripcion" rows="3" placeholder="Detalles del plan..."></textarea>
+                <textarea name="descripcion" id="input-descripcion" rows="3" placeholder="Detalles del plan..."></textarea>
 
-                <button type="submit" class="boton-agendar">Agendar 💙</button>
+                <button type="submit" class="boton-agendar" id="boton-guardar">Agendar 💙</button>
             </form>
+
+            <button type="button" class="boton-eliminar" id="boton-eliminar" onclick="eliminarCitaActual()" style="display:none;">
+                Eliminar cita 🗑️
+            </button>
         </div>
+
+        <form method="POST" action="{% url 'eliminar_cita' 0 %}" id="form-eliminar">
+            {% csrf_token %}
+            <input type="hidden" name="anio" value="{{ anio }}">
+            <input type="hidden" name="mes" value="{{ mes }}">
+        </form>
     </div>
 
 
@@ -86,9 +111,48 @@
             const mes = {{ mes }};
             const fecha = `${anio}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 
+            // Limpiamos el form por si quedó con datos de una edición anterior
+            document.getElementById('input-cita-id').value = '';
+            document.getElementById('input-titulo').value = '';
+            document.getElementById('input-plan').selectedIndex = 0;
+            document.getElementById('input-hora').value = '';
+            document.getElementById('input-descripcion').value = '';
             document.getElementById('input-fecha').value = fecha;
+
             document.getElementById('modal-titulo').textContent = `Agendar cita - ${dia}/${mes}/${anio}`;
+            document.getElementById('boton-guardar').textContent = 'Agendar 💙';
+            document.getElementById('boton-eliminar').style.display = 'none';
+
             document.getElementById('modal-fondo').classList.add('activo');
+        }
+
+        function abrirCita(event, id, titulo, plan, hora, descripcion, fecha) {
+            event.stopPropagation();
+
+            document.getElementById('input-cita-id').value = id;
+            document.getElementById('input-titulo').value = titulo;
+            document.getElementById('input-plan').value = plan;
+            document.getElementById('input-hora').value = hora;
+            document.getElementById('input-descripcion').value = descripcion;
+            document.getElementById('input-fecha').value = fecha;
+
+            document.getElementById('modal-titulo').textContent = 'Editar cita';
+            document.getElementById('boton-guardar').textContent = 'Guardar cambios 💙';
+            document.getElementById('boton-eliminar').style.display = 'block';
+
+            document.getElementById('modal-fondo').classList.add('activo');
+        }
+
+        function eliminarCitaActual() {
+            const id = document.getElementById('input-cita-id').value;
+            if (!id) return;
+
+            const confirmado = confirm('¿Seguro que querés eliminar esta cita?');
+            if (!confirmado) return;
+
+            const form = document.getElementById('form-eliminar');
+            form.action = form.action.replace('/0/', `/${id}/`);
+            form.submit();
         }
 
         function cerrarModal() {
@@ -99,6 +163,73 @@
             if (evento.target.id === 'modal-fondo') {
                 cerrarModal();
             }
+        }
+
+        function gestionarDia(td, dia) {
+            const anio = {{ anio }};
+            const mes = {{ mes }};
+            const fecha = `${anio}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+
+            const citasDelDia = td.querySelectorAll('.mini-cita');
+
+            document.getElementById('input-fecha').value = fecha;
+
+            if (citasDelDia.length === 0) {
+                mostrarFormularioNuevo();
+            } else {
+                construirMenu(citasDelDia, dia, mes, anio);
+            }
+
+            document.getElementById('modal-fondo').classList.add('activo');
+        }
+
+        function construirMenu(citasDelDia, dia, mes, anio) {
+            const lista = document.getElementById('lista-citas-dia');
+            lista.innerHTML = '';
+
+            citasDelDia.forEach(function (chip) {
+                const item = document.createElement('li');
+                item.textContent = `${chip.dataset.planTexto} — ${chip.dataset.titulo}`;
+                item.onclick = function () {
+                    abrirCitaDesdeElemento(chip);
+                };
+                lista.appendChild(item);
+            });
+
+            document.getElementById('modal-titulo').textContent = `Citas del ${dia}/${mes}/${anio}`;
+            document.getElementById('menu-dia').style.display = 'block';
+            document.getElementById('menu-dia-form').style.display = 'none';
+        }
+
+        function mostrarFormularioNuevo() {
+            document.getElementById('input-cita-id').value = '';
+            document.getElementById('input-titulo').value = '';
+            document.getElementById('input-plan').selectedIndex = 0;
+            document.getElementById('input-hora').value = '';
+            document.getElementById('input-descripcion').value = '';
+
+            document.getElementById('modal-titulo').textContent = 'Agendar cita';
+            document.getElementById('boton-guardar').textContent = 'Agendar 💙';
+            document.getElementById('boton-eliminar').style.display = 'none';
+
+            document.getElementById('menu-dia').style.display = 'none';
+            document.getElementById('menu-dia-form').style.display = 'block';
+        }
+
+        function abrirCitaDesdeElemento(chip) {
+            document.getElementById('input-cita-id').value = chip.dataset.id;
+            document.getElementById('input-titulo').value = chip.dataset.titulo;
+            document.getElementById('input-plan').value = chip.dataset.plan;
+            document.getElementById('input-hora').value = chip.dataset.hora;
+            document.getElementById('input-descripcion').value = chip.dataset.descripcion;
+            document.getElementById('input-fecha').value = chip.dataset.fecha;
+
+            document.getElementById('modal-titulo').textContent = 'Editar cita';
+            document.getElementById('boton-guardar').textContent = 'Guardar cambios 💙';
+            document.getElementById('boton-eliminar').style.display = 'block';
+
+            document.getElementById('menu-dia').style.display = 'none';
+            document.getElementById('menu-dia-form').style.display = 'block';
         }
     </script>
 </body>
