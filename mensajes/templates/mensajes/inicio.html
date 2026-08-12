@@ -1,13 +1,7 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuestras Citas 💙</title>
-    <link rel="stylesheet" href="{% static 'citas/style.css' %}">
-</head>
-<body>
+
+{% block contenido %}
     <div class="contenedor-inicio">
         <h1>Nuestros momentos</h1>
 
@@ -36,7 +30,7 @@
                 <div class="carrusel-puntos" id="carrusel-puntos"></div>
             {% endif %}
         </div>
-        
+
         <a href="{% url 'calendario' %}" class="boton-ir-calendario">Ver calendario</a>
     </div>
 
@@ -73,5 +67,4 @@
             actualizarCarrusel();
         }
     </script>
-</body>
-</html>
+{% endblock %}

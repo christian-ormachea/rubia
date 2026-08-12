@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Nuestras Citas 💙{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'citas/style.css' %}">
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <nav class="navbar">
+        <a href="{% url 'inicio' %}" class="navbar-link">Inicio</a>
+        <a href="{% url 'calendario' %}" class="navbar-link">Calendario</a>
+        <a href="{% url 'notas' %}" class="navbar-link">Notas</a>
+        <a href="{% url 'logout' %}" class="navbar-link navbar-salir">Salir</a>
+    </nav>
+    {% endif %}
+
+    {% block contenido %}
+    {% endblock %}
+</body>
+</html>

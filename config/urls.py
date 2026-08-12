@@ -27,6 +27,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('', include('mensajes.urls')),
     path('calendario/', include('citas.urls')),
+    path('notas/', include('notas.urls')),
 ]
 
 if settings.DEBUG:
