@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Eliminar nota{% endblock %}
+
+{% block contenido %}
+<p>¿Seguro que querés eliminar esta nota?</p>
+<p>{{ nota.contenido|truncatewords:20 }}</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Sí, eliminar</button>
+    <a href="{% url 'notas' %}">Cancelar</a>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Notas{% endblock %}
+
+{% block contenido %}
+<a href="{% url 'nota_crear' %}" class="btn-nueva-nota">+ Dejar una nota</a>
+
+{% for nota in notas %}
+    <div class="nota">
+        <p class="nota-autor">{{ nota.autor.first_name|default:nota.autor.username }} — {{ nota.creada|date:"d/m/Y H:i" }}</p>
+        <p class="nota-contenido">{{ nota.contenido|linebreaks }}</p>
+        {% if nota.imagen %}
+            <img src="{{ nota.imagen.url }}" alt="Imagen de la nota" class="nota-imagen">
+        {% endif %}
+        {% if nota.autor == request.user %}
+            <div class="nota-acciones">
+                <a href="{% url 'nota_editar' nota.pk %}">Editar</a>
+                <a href="{% url 'nota_eliminar' nota.pk %}">Eliminar</a>
+            </div>
+        {% endif %}
+    </div>
+{% empty %}
+    <p>Todavía no hay notas.</p>
+{% endfor %}
+{% endblock %}
