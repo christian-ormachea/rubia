@@ -501,3 +501,166 @@ h2 {
         border-color: #ff5a5a;
     }
 }
+
+.navbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 20px;
+    background: var(--fondo-tarjeta);
+    border-bottom: 1px solid var(--borde);
+}
+
+.navbar-link {
+    text-decoration: none;
+    color: var(--texto);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 8px 14px;
+    border-radius: 20px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+@media (hover: hover) {
+    .navbar-link:hover {
+        background: var(--acento-suave);
+        color: var(--acento);
+    }
+}
+
+.form-salir {
+    margin-left: auto;
+}
+
+.navbar-salir {
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    color: var(--texto-suave);
+}
+
+@media (hover: hover) {
+    .navbar-salir:hover {
+        background: #ff5a5a22;
+        color: #ff5a5a;
+    }
+}
+
+.contenedor-notas {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+}
+
+.btn-nueva-nota {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: var(--acento);
+    color: #1a1f36;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: opacity 0.15s ease;
+}
+
+@media (hover: hover) {
+    .btn-nueva-nota:hover {
+        opacity: 0.9;
+    }
+}
+
+.nota {
+    background: var(--fondo-tarjeta);
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.nota-autor {
+    margin: 0 0 8px;
+    font-size: 0.75rem;
+    color: var(--texto-suave);
+}
+
+.nota-contenido {
+    margin: 0 0 10px;
+    color: var(--texto);
+    line-height: 1.5;
+}
+
+.nota-imagen {
+    width: 100%;
+    max-width: 320px;
+    border-radius: 10px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.nota-acciones {
+    display: flex;
+    gap: 14px;
+}
+
+.nota-acciones a {
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+    text-decoration: none;
+}
+
+@media (hover: hover) {
+    .nota-acciones a:hover {
+        color: var(--acento);
+    }
+}
+
+.form-nota {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+}
+
+.form-nota p {
+    margin-bottom: 14px;
+}
+
+.form-nota label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+    margin-bottom: 4px;
+}
+
+.form-nota input,
+.form-nota textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--borde);
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.form-nota button {
+    margin-top: 6px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    background: var(--acento);
+    color: #1a1f36;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+@media (hover: hover) {
+    .form-nota button:hover {
+        opacity: 0.9;
+    }
+}

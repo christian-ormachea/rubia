@@ -3,9 +3,11 @@
 {% block titulo %}{% if editar %}Editar nota{% else %}Nueva nota{% endif %}{% endblock %}
 
 {% block contenido %}
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar</button>
-</form>
+<div class="form-nota">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar</button>
+    </form>
+</div>
 {% endblock %}

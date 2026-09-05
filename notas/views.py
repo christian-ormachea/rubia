@@ -14,21 +14,28 @@ def lista_notas(request):
 
 @login_required
 def crear_nota(request):
-    if request.method == 'POST':
-        form = NotaForm(request.POST, request.FILES)
-        if form.is_valid():
-            nota = form.save(commit=False)
-            nota.autor = request.user
-            nota.save()
-            return redirect('notas')
+    if request.user.is_superuser:
+        if request.method == 'POST':
+            form = NotaForm(request.POST, request.FILES)
+            if form.is_valid():
+                nota = form.save(commit=False)
+                nota.autor = request.user
+                nota.save()
+                return redirect('notas')
+        else:
+            form = NotaForm()
     else:
-        form = NotaForm()
+        raise PermissionDenied
     return render(request, 'notas/form.html', {'form': form})
 
 
 @login_required
 def editar_nota(request, pk):
     nota = get_object_or_404(Nota, pk=pk)
+
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    
     if nota.autor != request.user:
         raise PermissionDenied
 
@@ -45,6 +52,10 @@ def editar_nota(request, pk):
 @login_required
 def eliminar_nota(request, pk):
     nota = get_object_or_404(Nota, pk=pk)
+
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     if nota.autor != request.user:
         raise PermissionDenied
 

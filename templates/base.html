@@ -13,7 +13,10 @@
         <a href="{% url 'inicio' %}" class="navbar-link">Inicio</a>
         <a href="{% url 'calendario' %}" class="navbar-link">Calendario</a>
         <a href="{% url 'notas' %}" class="navbar-link">Notas</a>
-        <a href="{% url 'logout' %}" class="navbar-link navbar-salir">Salir</a>
+        <form action="{% url 'logout' %}" method="post" class="form-salir" onsubmit="return confirm('¿Cerrar sesión?')">
+            {% csrf_token %}
+            <button type="submit" class="navbar-link navbar-salir">Salir</button>
+        </form>
     </nav>
     {% endif %}
 

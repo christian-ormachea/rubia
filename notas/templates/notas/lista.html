@@ -3,7 +3,9 @@
 {% block titulo %}Notas{% endblock %}
 
 {% block contenido %}
-<a href="{% url 'nota_crear' %}" class="btn-nueva-nota">+ Dejar una nota</a>
+{% if user.is_superuser %}
+    <a href="{% url 'nota_crear' %}" class="btn-nueva-nota">+ Dejar una nota</a>
+{% endif %}
 
 {% for nota in notas %}
     <div class="nota">
