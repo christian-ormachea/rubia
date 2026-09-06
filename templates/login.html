@@ -29,6 +29,25 @@
 
                 <button type="submit" class="boton-agendar">Ingresar 💙</button>
             </form>
+
+            <p style="text-align: center; margin-top: 14px;">
+                <a href="#" onclick="document.getElementById('modal-fondo').classList.add('activo'); return false;" style="font-size: 0.85rem; color: var(--texto-suave);">
+                    ¿No te acordás tu usuario o contraseña? 🤔
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <div id="modal-fondo" class="modal-fondo" onclick="if(event.target.id === 'modal-fondo') this.classList.remove('activo')">
+        <div class="modal-caja" style="max-width: 340px;">
+            <h3>Pista 🔑</h3>
+            <p>
+                <!-- REEMPLAZÁ ESTE TEXTO POR EL ACERTIJO REAL -->
+                Acá va tu acertijo...
+            </p>
+            <button type="button" class="boton-agendar" onclick="document.getElementById('modal-fondo').classList.remove('activo')">
+                Cerrar
+            </button>
         </div>
     </div>
 </body>
