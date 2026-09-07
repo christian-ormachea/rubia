@@ -1,22 +1,12 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Citas Disponibles 💕</title>
-    <link rel="stylesheet" href="{% static 'citas/style.css' %}">
-</head>
-<body>
-    <div class="contenedor-calendario">
-        
-        <h1>Citas Disponibles</h1>
 
-        <p style="text-align:center; margin-top:-4px;">
-            <a href="{% url 'logout' %}" class="enlace-salir">
-                Cerrar sesión ({{ request.user.username }})
-            </a>
-        </p>
+{% block titulo %}Citas Disponibles 💕{% endblock %}
+
+{% block contenido %}
+    <div class="contenedor-calendario">
+
+        <h1>Citas Disponibles</h1>
 
         <div class="nav-mes">
             <a href="{% url 'calendario' %}?anio={{ anio_mes_anterior }}&mes={{ mes_anterior }}" class="boton-nav">&larr;</a>
@@ -71,7 +61,7 @@
         <div class="modal-caja">
             <button type="button" class="modal-cerrar" onclick="cerrarModal()">&times;</button>
             <h3 id="modal-titulo">Agendar cita</h3>
-            
+
 
             <div id="menu-dia">
                 <ul id="lista-citas-dia"></ul>
@@ -116,14 +106,12 @@
         </form>
     </div>
 
-
     <script>
         function abrirModal(dia) {
             const anio = {{ anio }};
             const mes = {{ mes }};
             const fecha = `${anio}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
 
-            // Limpiamos el form por si quedó con datos de una edición anterior
             document.getElementById('input-cita-id').value = '';
             document.getElementById('input-titulo').value = '';
             document.getElementById('input-plan').selectedIndex = 0;
@@ -245,5 +233,4 @@
             document.getElementById('menu-dia-form').style.display = 'block';
         }
     </script>
-</body>
-</html>
+{% endblock %}

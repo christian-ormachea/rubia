@@ -5,7 +5,7 @@
     <div class="contenedor-inicio">
         <h1>Nuestros momentos</h1>
 
-        <div class="carrusel-contenedor">
+        <div class="carrusel-contenedor carrusel-mensajes">
             <div class="carrusel-viewport">
                 <div class="carrusel-pista" id="carrusel-pista">
                     {% for mensaje in mensajes %}
@@ -13,10 +13,12 @@
                             {% if mensaje.imagen %}
                                 <img src="{{ mensaje.imagen.url }}" alt="{{ mensaje.texto }}" class="card-imagen">
                             {% endif %}
-                            <p class="card-texto">{{ mensaje.texto }}</p>
-                            {% if mensaje.descripcion %}
-                                <p class="card-descripcion">{{ mensaje.descripcion }}</p>
-                            {% endif %}
+                            <div class="card-contenido">
+                                <p class="card-texto">{{ mensaje.texto }}</p>
+                                {% if mensaje.descripcion %}
+                                    <p class="card-descripcion">{{ mensaje.descripcion }}</p>
+                                {% endif %}
+                            </div>
                         </div>
                     {% empty %}
                         <p class="mensaje-lindo">Todavía no hay recuerdos cargados 💭</p>
@@ -31,7 +33,58 @@
             {% endif %}
         </div>
 
-        <a href="{% url 'calendario' %}" class="boton-ir-calendario">Ver calendario</a>
+        <section class="seccion-inicio">
+            <h2>📅 Calendario</h2>
+            <p class="seccion-descripcion">Acá agendamos nuestros planes: citas, salidas, o cualquier cosa que queramos hacer juntos.</p>
+
+            <table class="calendario calendario-mini">
+                <thead>
+                    <tr>
+                        {% for dia in semana_actual %}
+                            <th>
+                                <span class="dia-completo">{{ dia.nombre }}</span>
+                                <span class="dia-abrev">{{ dia.nombre|slice:":3" }}</span>
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for dia in semana_actual %}
+                            <td class="{% if dia.citas %}dia-con-citas{% endif %}{% if dia.es_hoy %} dia-hoy{% endif %}">
+                                <a href="{% url 'calendario' %}" class="celda-dia-link">
+                                    <span class="numero-dia">{{ dia.numero }}</span>
+                                    {% for cita in dia.citas %}
+                                        <div class="mini-cita">
+                                            <span class="mini-cita-texto">{{ cita.get_plan_display }}</span>
+                                            <span class="mini-cita-emoji">{{ cita.get_plan_display|slice:":1" }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </a>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+
+            <a href="{% url 'calendario' %}" class="btn-seccion">Ver calendario completo</a>
+        </section>  
+
+        <section class="seccion-inicio">
+            <h2>📝 Notas</h2>
+            <p class="seccion-descripcion">Un espacio para dejarnos mensajes, pensamientos o cosas lindas que queramos recordar.</p>
+
+            {% if ultima_nota %}
+                <div class="preview-tarjeta">
+                    <p class="preview-titulo">{{ ultima_nota.titulo }}</p>
+                    <p class="preview-contenido">{{ ultima_nota.contenido|truncatewords:20 }}</p>
+                </div>
+            {% else %}
+                <p class="preview-vacio">Todavía no hay notas escritas.</p>
+            {% endif %}
+
+            <a href="{% url 'notas' %}" class="btn-seccion">Ver notas</a>
+        </section>
     </div>
 
     <script>

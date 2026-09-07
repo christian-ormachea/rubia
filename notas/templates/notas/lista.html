@@ -3,25 +3,80 @@
 {% block titulo %}Notas{% endblock %}
 
 {% block contenido %}
-{% if user.is_superuser %}
-    <a href="{% url 'nota_crear' %}" class="btn-nueva-nota">+ Dejar una nota</a>
-{% endif %}
-
-{% for nota in notas %}
-    <div class="nota">
-        <p class="nota-autor">{{ nota.autor.first_name|default:nota.autor.username }} — {{ nota.creada|date:"d/m/Y H:i" }}</p>
-        <p class="nota-contenido">{{ nota.contenido|linebreaks }}</p>
-        {% if nota.imagen %}
-            <img src="{{ nota.imagen.url }}" alt="Imagen de la nota" class="nota-imagen">
-        {% endif %}
-        {% if nota.autor == request.user %}
-            <div class="nota-acciones">
-                <a href="{% url 'nota_editar' nota.pk %}">Editar</a>
-                <a href="{% url 'nota_eliminar' nota.pk %}">Eliminar</a>
-            </div>
-        {% endif %}
+<div class="contenedor-notas">
+    <div class="notas-intro">
+        <h1>Notas</h1>
+        <p class="seccion-descripcion">Un espacio para dejarnos mensajes, pensamientos o cosas lindas que queramos recordar, para leer cuando queramos.</p>
     </div>
-{% empty %}
-    <p>Todavía no hay notas.</p>
-{% endfor %}
+
+    {% if user.is_superuser %}
+        <a href="{% url 'nota_crear' %}" class="btn-nueva-nota">+ Dejar una nota</a>
+    {% endif %}
+
+    {% if notas %}
+        <div class="carrusel-contenedor">
+            <div class="carrusel-viewport">
+                <div class="carrusel-pista" id="carrusel-notas-pista">
+                    {% for nota in notas %}
+                        <div class="nota{% if not nota.imagen %} nota-sin-imagen{% endif %}">
+                            <div class="nota-texto">
+                                <p class="nota-autor">{{ nota.autor.first_name|default:nota.autor.username }} — {{ nota.creada|date:"d/m/Y H:i" }}</p>
+                                <p class="nota-contenido">{{ nota.contenido|linebreaks }}</p>
+                                {% if nota.autor == request.user %}
+                                    <div class="nota-acciones">
+                                        <a href="{% url 'nota_editar' nota.pk %}">Editar</a>
+                                        <a href="{% url 'nota_eliminar' nota.pk %}">Eliminar</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if nota.imagen %}
+                                <img src="{{ nota.imagen.url }}" alt="Imagen de la nota" class="nota-imagen">
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button type="button" class="carrusel-flecha carrusel-flecha-izq" onclick="moverCarruselNotas(-1)">&larr;</button>
+            <button type="button" class="carrusel-flecha carrusel-flecha-der" onclick="moverCarruselNotas(1)">&rarr;</button>
+            <div class="carrusel-puntos" id="carrusel-notas-puntos"></div>
+        </div>
+    {% else %}
+        <p class="preview-vacio">Todavía no hay notas.</p>
+    {% endif %}
+</div>
+
+<script>
+    const pistaNotas = document.getElementById('carrusel-notas-pista');
+    const puntosNotas = document.getElementById('carrusel-notas-puntos');
+    const totalNotas = pistaNotas ? pistaNotas.children.length : 0;
+    let indiceNotaActual = 0;
+
+    if (totalNotas > 0) {
+        for (let i = 0; i < totalNotas; i++) {
+            const punto = document.createElement('span');
+            punto.classList.add('punto');
+            if (i === 0) punto.classList.add('activo');
+            punto.onclick = () => irANota(i);
+            puntosNotas.appendChild(punto);
+        }
+    }
+
+    function actualizarCarruselNotas() {
+        pistaNotas.style.transform = `translateX(-${indiceNotaActual * 100}%)`;
+        document.querySelectorAll('#carrusel-notas-puntos .punto').forEach((punto, i) => {
+            punto.classList.toggle('activo', i === indiceNotaActual);
+        });
+    }
+
+    function moverCarruselNotas(direccion) {
+        indiceNotaActual = (indiceNotaActual + direccion + totalNotas) % totalNotas;
+        actualizarCarruselNotas();
+    }
+
+    function irANota(indice) {
+        indiceNotaActual = indice;
+        actualizarCarruselNotas();
+    }
+</script>
 {% endblock %}
