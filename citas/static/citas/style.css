@@ -177,6 +177,8 @@ h2 {
     padding: 24px;
     width: 100%;
     max-width: 380px;
+    max-height: 90vh;
+    overflow-y: auto;
     position: relative;
     animation: aparecer 0.2s ease;
 }
@@ -424,32 +426,6 @@ h2 {
 .carrusel-flecha:active {
     transform: scale(0.9);
 }
-
-@media (max-width: 700px) {
-    .card-recuerdo {
-        flex-direction: column;
-    }
-
-    .card-imagen {
-        width: 100%;
-        height: 240px;
-    }
-
-    .card-imagen-grilla {
-        width: 100%;
-        height: 240px;
-    }
-
-    .card-contenido {
-        width: 100%;
-        padding: 16px;
-    }
-
-    .carrusel-mensajes .carrusel-flecha-der {
-    right: 12px;
-    }
-}
-
 
 @media (hover: hover) {
     .carrusel-flecha:hover {
@@ -1003,5 +979,48 @@ h2 {
 @media (hover: hover) {
     .card-imagen-item-contenedor:hover .card-imagen-hover {
         opacity: 1;
+    }
+}
+@media (max-width: 700px) {
+    .card-recuerdo {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .card-imagen {
+        width: 100%;
+        height: 240px;
+    }
+
+    .card-imagen-grilla {
+        width: 100%;
+        height: 240px;
+    }
+
+    .card-contenido {
+        width: 100%;
+        padding: 16px;
+    }
+
+    .carrusel-mensajes .carrusel-flecha-der {
+        right: 12px;
+    }
+
+    .nota {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .nota-texto {
+        width: 100%;
+    }
+
+    .nota-sin-imagen .nota-texto {
+        width: 100%;
+    }
+
+    .nota-imagen-grilla {
+        width: 100%;
+        height: 240px;
     }
 }
