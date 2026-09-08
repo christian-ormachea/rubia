@@ -3,7 +3,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import NotaForm
-from .models import Nota
+from .models import Nota, NotaImagen
 
 
 @login_required
@@ -21,6 +21,10 @@ def crear_nota(request):
                 nota = form.save(commit=False)
                 nota.autor = request.user
                 nota.save()
+
+                for foto in request.FILES.getlist('fotos'):
+                    NotaImagen.objects.create(nota=nota, imagen=foto)
+
                 return redirect('notas')
         else:
             form = NotaForm()
@@ -35,7 +39,7 @@ def editar_nota(request, pk):
 
     if not request.user.is_superuser:
         raise PermissionDenied
-    
+
     if nota.autor != request.user:
         raise PermissionDenied
 
@@ -43,10 +47,18 @@ def editar_nota(request, pk):
         form = NotaForm(request.POST, request.FILES, instance=nota)
         if form.is_valid():
             form.save()
+
+            ids_a_eliminar = request.POST.getlist('eliminar_imagen')
+            if ids_a_eliminar:
+                NotaImagen.objects.filter(id__in=ids_a_eliminar, nota=nota).delete()
+
+            for foto in request.FILES.getlist('fotos'):
+                NotaImagen.objects.create(nota=nota, imagen=foto)
+
             return redirect('notas')
     else:
         form = NotaForm(instance=nota)
-    return render(request, 'notas/form.html', {'form': form, 'editar': True})
+    return render(request, 'notas/form.html', {'form': form, 'editar': True, 'nota': nota})
 
 
 @login_required

@@ -3,15 +3,22 @@
 
 {% block contenido %}
     <div class="contenedor-inicio">
-        <h1>Nuestros momentos</h1>
+        <h1>Nuestros momentos ✨</h1>
 
         <div class="carrusel-contenedor carrusel-mensajes">
             <div class="carrusel-viewport">
                 <div class="carrusel-pista" id="carrusel-pista">
                     {% for mensaje in mensajes %}
                         <div class="card-recuerdo">
-                            {% if mensaje.imagen %}
-                                <img src="{{ mensaje.imagen.url }}" alt="{{ mensaje.texto }}" class="card-imagen">
+                            {% if mensaje.urls_imagenes %}
+                                <div class="card-imagen-grilla" id="imagenes-mensaje-{{ mensaje.pk }}">
+                                    {% for url in mensaje.urls_imagenes %}
+                                        <div class="card-imagen-item-contenedor" onclick="abrirLightbox('{{ mensaje.pk }}', {{ forloop.counter0 }})">
+                                            <img src="{{ url }}" alt="{{ mensaje.texto }}" class="card-imagen-item">
+                                            <div class="card-imagen-hover">🔍</div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             {% endif %}
                             <div class="card-contenido">
                                 <p class="card-texto">{{ mensaje.texto }}</p>
@@ -35,7 +42,7 @@
 
         <section class="seccion-inicio">
             <h2>📅 Calendario</h2>
-            <p class="seccion-descripcion">Acá agendamos nuestros planes: citas, salidas, o cualquier cosa que queramos hacer juntos.</p>
+            <p class="seccion-descripcion">Acá vas a poder agendar nuestros planes: citas, salidas, o cualquier cosa que queramos hacer juntos.</p>
 
             <table class="calendario calendario-mini">
                 <thead>
@@ -72,7 +79,7 @@
 
         <section class="seccion-inicio">
             <h2>📝 Notas</h2>
-            <p class="seccion-descripcion">Un espacio para dejarnos mensajes, pensamientos o cosas lindas que queramos recordar.</p>
+            <p class="seccion-descripcion">Un espacio para que te pueda dejar mensajes, pensamientos o cosas lindas que quiera que recuerdes.💞</p>
 
             {% if ultima_nota %}
                 <div class="preview-tarjeta">
@@ -87,6 +94,12 @@
         </section>
     </div>
 
+    <div id="lightbox-fondo" class="modal-fondo" onclick="if(event.target.id === 'lightbox-fondo') cerrarLightbox()">
+        <button type="button" class="modal-cerrar" onclick="cerrarLightbox()">&times;</button>
+        <button type="button" class="carrusel-flecha carrusel-flecha-izq" onclick="moverLightbox(-1)">&larr;</button>
+        <img id="lightbox-imagen" class="lightbox-imagen" src="" alt="Foto ampliada">
+        <button type="button" class="carrusel-flecha carrusel-flecha-der" onclick="moverLightbox(1)">&rarr;</button>
+    </div>
     <script>
         const pista = document.getElementById('carrusel-pista');
         const contenedorPuntos = document.getElementById('carrusel-puntos');
@@ -120,4 +133,40 @@
             actualizarCarrusel();
         }
     </script>
+
+    <div id="modal-bienvenida-fondo" class="modal-fondo">
+        <div class="modal-caja">
+            <h3>¡Bienvenida! 💙</h3>
+            <p>Esta es nuestra página personal! Pense en este proyecto como una forma de saber de tu Ex sin la necesidad de revisar mi IG (Spoiler: no lo uso 🤷‍♂️.) y poder enterarte de mi, yo no comparto nada en ningun lado, asi que sentite suertuda de que comparto información mia en un lugar privado para vos 😝. Aca vas a poder agendar planes conmigo, (cuando no quieras escribirme para vernos, porque estes enojada y no quieras hablar o estes triste y no puedas contar porque) podes agendar una fecha ahi en el Calendario y con esto vas a saber que voy a estar ahí, ni hace falta que me escribas al WhatsApp para validar.</p>
+             
+            <p> Tambien tenes un apartado de Notas donde vas a poder saber de mí, ahi voy a estar subiendo cosas que creo pueden resultar interesantes, curiosas o graciosas. Desde la página principal podés ver algunos momentos que pasamos, anecdotas y recuerdos, tambien siento que es una forma de guardar varios momentos que vivimos juntos. La verdad es que el sitio es básico, no quería algo muy elaborado, sino una forma de tener un espacio dedicado para vos, como te dije en la carta no se en que va a deparar lo nuestro, pero aunque pase el tiempo este sitio va a quedar (ademas porque compre el dominio pinchilas.com por 3 años xd) y va a ser la prueba de que mi amor por vos sigue intacto. </p> 
+
+            <p>PD:<i>Este sitio tiene un sistema de ingreso por Claves, cada un mes vas a tener que cambiar la clave, vas a ver que aparece la notificación cerca de la fecha que tengas que cambiarla, de esta manera yo se que le estas dando uso 👀. Yo en el mientras tanto voy a seguir subiendo contenido y desarrollando nuevas cosas, porque siento que es un lindo espacio para los dos.</i>💖 Version 1.0</p>
+
+            <form method="post" action="{% url 'guardar_preferencia_popup' %}" onsubmit="return manejarCierrePopup(event)">
+                {% csrf_token %}
+                <label style="display:flex; align-items:center; gap:8px; margin-top:16px; font-size:0.85rem; color:var(--texto-suave);">
+                    <input type="checkbox" name="no_volver_a_mostrar" id="check-no-mostrar" style="width:auto;">
+                    No volver a mostrar
+                </label>
+                <button type="submit" class="boton-agendar">Entendido 💙</button>
+            </form>
+        </div>
+    </div>
+
+    {% if mostrar_popup_bienvenida %}
+        <script>
+            document.getElementById('modal-bienvenida-fondo').classList.add('activo');
+
+            function manejarCierrePopup(evento) {
+                const marcado = document.getElementById('check-no-mostrar').checked;
+                if (!marcado) {
+                    evento.preventDefault();
+                    document.getElementById('modal-bienvenida-fondo').classList.remove('activo');
+                    return false;
+                }
+                return true;
+            }
+        </script>
+    {% endif %}
 {% endblock %}

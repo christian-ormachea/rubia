@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block titulo %}Nuestras Citas 💙{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'citas/style.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'citas/img/pincho-logo.png' %}">
 </head>
 <body>
     {% if user.is_authenticated %}
@@ -32,6 +33,7 @@
         <div class="footer-texto">
             <p class="footer-frase">Sé que la idea de este sitio es en parte no hablar, pero si en algún momento querés hacerlo hacelo, no importa la hora ni donde estes. ❣️</p>
             <p class="footer-firma">Hecho con 💙 por Christian</p>
+            <p class="footer-frase">PD: <i>Si, el logo es Pincho porque why not?</i></p>
         </div>
     </footer>
 </body>

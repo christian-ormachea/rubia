@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block titulo %}Citas Disponibles 💕{% endblock %}
+{% block titulo %}Calendario 💕{% endblock %}
 
 {% block contenido %}
     <div class="contenedor-calendario">
 
-        <h1>Citas Disponibles</h1>
+        <h1>Calendario 📅</h1>
+        <p style="text-align: center;">Aca vas a poder agendar alguna cita conmigo. 👀 Usar con discreción bue.</p>
 
         <div class="nav-mes">
             <a href="{% url 'calendario' %}?anio={{ anio_mes_anterior }}&mes={{ mes_anterior }}" class="boton-nav">&larr;</a>

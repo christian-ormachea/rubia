@@ -7,6 +7,22 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
+
+        {% if editar and nota.imagenes_extra.all %}
+            <p class="fotos-actuales-titulo">Fotos actuales (tildá las que quieras eliminar):</p>
+            <div class="fotos-actuales">
+                {% for img in nota.imagenes_extra.all %}
+                    <label class="foto-actual">
+                        <img src="{{ img.imagen.url }}" alt="Foto de la nota">
+                        <span><input type="checkbox" name="eliminar_imagen" value="{{ img.id }}"> Eliminar</span>
+                    </label>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <label>Agregar fotos {% if editar %}nuevas {% endif %}(opcional, podés elegir varias)</label>
+        <input type="file" name="fotos" multiple accept="image/*">
+
         <button type="submit">Guardar</button>
     </form>
 </div>

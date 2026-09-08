@@ -5,8 +5,8 @@
 {% block contenido %}
 <div class="contenedor-notas">
     <div class="notas-intro">
-        <h1>Notas</h1>
-        <p class="seccion-descripcion">Un espacio para dejarnos mensajes, pensamientos o cosas lindas que queramos recordar, para leer cuando queramos.</p>
+        <h1>Notas 📝</h1>
+        <p class="seccion-descripcion">Un espacio para que puedas saber de mi, aca voy a escribir cada tanto cosas lindas que quiera que recerdes de mí, para que leas cuando no este.</p>
     </div>
 
     {% if user.is_superuser %}
@@ -18,7 +18,7 @@
             <div class="carrusel-viewport">
                 <div class="carrusel-pista" id="carrusel-notas-pista">
                     {% for nota in notas %}
-                        <div class="nota{% if not nota.imagen %} nota-sin-imagen{% endif %}">
+                        <div class="nota{% if not nota.urls_imagenes %} nota-sin-imagen{% endif %}">
                             <div class="nota-texto">
                                 <p class="nota-autor">{{ nota.autor.first_name|default:nota.autor.username }} — {{ nota.creada|date:"d/m/Y H:i" }}</p>
                                 <p class="nota-contenido">{{ nota.contenido|linebreaks }}</p>
@@ -29,8 +29,16 @@
                                     </div>
                                 {% endif %}
                             </div>
-                            {% if nota.imagen %}
-                                <img src="{{ nota.imagen.url }}" alt="Imagen de la nota" class="nota-imagen">
+
+                            {% if nota.urls_imagenes %}
+                                <div class="nota-imagen-grilla" id="imagenes-nota-{{ nota.pk }}">
+                                    {% for url in nota.urls_imagenes %}
+                                        <div class="nota-imagen-item-contenedor" onclick="abrirLightbox('{{ nota.pk }}', {{ forloop.counter0 }})">
+                                            <img src="{{ url }}" alt="Foto de la nota" class="nota-imagen-grilla-item">
+                                            <div class="nota-imagen-hover">🔍</div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -44,6 +52,13 @@
     {% else %}
         <p class="preview-vacio">Todavía no hay notas.</p>
     {% endif %}
+</div>
+
+<div id="lightbox-fondo" class="modal-fondo" onclick="if(event.target.id === 'lightbox-fondo') cerrarLightbox()">
+    <button type="button" class="modal-cerrar" onclick="cerrarLightbox()">&times;</button>
+    <button type="button" class="carrusel-flecha carrusel-flecha-izq" onclick="moverLightbox(-1)">&larr;</button>
+    <img id="lightbox-imagen" class="lightbox-imagen" src="" alt="Foto ampliada">
+    <button type="button" class="carrusel-flecha carrusel-flecha-der" onclick="moverLightbox(1)">&rarr;</button>
 </div>
 
 <script>
@@ -77,6 +92,30 @@
     function irANota(indice) {
         indiceNotaActual = indice;
         actualizarCarruselNotas();
+    }
+
+    let lightboxImagenes = [];
+    let lightboxIndice = 0;
+
+    function abrirLightbox(pk, indice) {
+        const contenedor = document.getElementById('imagenes-nota-' + pk);
+        lightboxImagenes = Array.from(contenedor.querySelectorAll('img')).map(img => img.src);
+        lightboxIndice = indice;
+        actualizarLightbox();
+        document.getElementById('lightbox-fondo').classList.add('activo');
+    }
+
+    function actualizarLightbox() {
+        document.getElementById('lightbox-imagen').src = lightboxImagenes[lightboxIndice];
+    }
+
+    function moverLightbox(direccion) {
+        lightboxIndice = (lightboxIndice + direccion + lightboxImagenes.length) % lightboxImagenes.length;
+        actualizarLightbox();
+    }
+
+    function cerrarLightbox() {
+        document.getElementById('lightbox-fondo').classList.remove('activo');
     }
 </script>
 {% endblock %}

@@ -19,3 +19,20 @@ class Nota(models.Model):
 
     def __str__(self):
         return f'Nota de {self.autor} - {self.creada:%d/%m/%Y}'
+
+    @property
+    def urls_imagenes(self):
+        urls = []
+        if self.imagen:
+            urls.append(self.imagen.url)
+        for extra in self.imagenes_extra.all():
+            urls.append(extra.imagen.url)
+        return urls
+
+
+class NotaImagen(models.Model):
+    nota = models.ForeignKey(Nota, on_delete=models.CASCADE, related_name='imagenes_extra')
+    imagen = models.ImageField(upload_to='notas/')
+
+    class Meta:
+        ordering = ['id']

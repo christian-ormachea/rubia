@@ -1,11 +1,11 @@
 from datetime import date, timedelta
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from citas.models import Cita
 from notas.models import Nota
-from .models import Mensaje
+from .models import Mensaje, PreferenciaUsuario
 
 DIAS_SEMANA = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
 
@@ -31,9 +31,20 @@ def inicio(request):
 
     ultima_nota = Nota.objects.order_by('-creada').first()
 
+    preferencia, _ = PreferenciaUsuario.objects.get_or_create(usuario=request.user)
     contexto = {
         'mensajes': mensajes,
         'semana_actual': semana_actual,
         'ultima_nota': ultima_nota,
+        'mostrar_popup_bienvenida': not preferencia.oculto_popup_bienvenida,
     }
     return render(request, 'mensajes/inicio.html', contexto)
+
+@login_required
+def guardar_preferencia_popup(request):
+    if request.method == 'POST':
+        preferencia, _ = PreferenciaUsuario.objects.get_or_create(usuario=request.user)
+        if request.POST.get('no_volver_a_mostrar'):
+            preferencia.oculto_popup_bienvenida = True
+            preferencia.save()
+    return redirect('inicio')
