@@ -132,6 +132,30 @@
             indiceActual = indice;
             actualizarCarrusel();
         }
+
+        let lightboxImagenes = [];
+        let lightboxIndice = 0;
+
+        function abrirLightbox(pk, indice) {
+            const contenedor = document.getElementById('imagenes-mensaje-' + pk);
+            lightboxImagenes = Array.from(contenedor.querySelectorAll('img')).map(img => img.src);
+            lightboxIndice = indice;
+            actualizarLightbox();
+            document.getElementById('lightbox-fondo').classList.add('activo');
+        }
+
+        function actualizarLightbox() {
+            document.getElementById('lightbox-imagen').src = lightboxImagenes[lightboxIndice];
+        }
+
+        function moverLightbox(direccion) {
+            lightboxIndice = (lightboxIndice + direccion + lightboxImagenes.length) % lightboxImagenes.length;
+            actualizarLightbox();
+        }
+
+        function cerrarLightbox() {
+            document.getElementById('lightbox-fondo').classList.remove('activo');
+        }
     </script>
 
     <div id="modal-bienvenida-fondo" class="modal-fondo">

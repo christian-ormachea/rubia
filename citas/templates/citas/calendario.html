@@ -107,6 +107,16 @@
         </form>
     </div>
 
+    <div id="modal-13-fondo" class="modal-fondo" onclick="if(event.target.id === 'modal-13-fondo') cerrarModal13()">
+        <div class="modal-caja">
+            <button type="button" class="modal-cerrar" onclick="cerrarModal13()">&times;</button>
+            <h3>13 👀</h3>
+            <p>Jejem, bueno! Supongo que queres agendar una cita el 13🫣... Supongo que lo haces porque representa una fecha especial (Y no, no es el 14), podes agendar una cita este día, te voy a llevar unas flores amarillas, esas que te gustan tanto a vos👀!</p>
+            <button type="button" class="boton-agendar" onclick="continuarDespuesDe13()">Agendar 💛</button>
+        </div>
+    </div>
+
+
     <script>
         function abrirModal(dia) {
             const anio = {{ anio }};
@@ -166,7 +176,29 @@
             }
         }
 
+        let pendienteTd = null;
+        let pendienteDia = null;
+
         function gestionarDia(td, dia) {
+            if (dia === 13) {
+                pendienteTd = td;
+                pendienteDia = dia;
+                document.getElementById('modal-13-fondo').classList.add('activo');
+                return;
+            }
+            procesarDia(td, dia);
+        }
+
+        function continuarDespuesDe13() {
+            document.getElementById('modal-13-fondo').classList.remove('activo');
+            procesarDia(pendienteTd, pendienteDia);
+        }
+
+        function cerrarModal13() {
+            document.getElementById('modal-13-fondo').classList.remove('activo');
+        }
+
+        function procesarDia(td, dia) {
             const anio = {{ anio }};
             const mes = {{ mes }};
             const fecha = `${anio}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;

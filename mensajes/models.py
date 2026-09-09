@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 class Mensaje(models.Model):
     texto = models.CharField(max_length=200)
@@ -33,3 +34,5 @@ class MensajeImagen(models.Model):
 class PreferenciaUsuario(models.Model):
     usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='preferencias')
     oculto_popup_bienvenida = models.BooleanField(default=False)
+    contrasena_cambiada_en = models.DateTimeField(default=timezone.now)
+    chocolate_visto = models.BooleanField(default=False)

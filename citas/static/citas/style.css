@@ -1024,3 +1024,30 @@ h2 {
         height: 240px;
     }
 }
+
+.chocolate-trigger {
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.modal-chocolate-caja {
+    background: #fdf6ec;
+    color: #1a1f36;
+}
+
+.modal-chocolate-caja h3 {
+    color: #6b4226;
+}
+
+.modal-chocolate-caja .modal-cerrar {
+    color: #6b4226;
+}
+
+.chocolate-imagen {
+    display: block;
+    width: 100%;
+    max-width: 260px;
+    margin: 12px auto;
+    border-radius: 12px;
+}

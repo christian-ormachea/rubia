@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Cambiar contraseña{% endblock %}
+
+{% block contenido %}
+<div class="form-nota">
+    <h1>Es momento de cambiar tu contraseña 🔐</h1>
+    <p class="seccion-descripcion">Por seguridad, cada 30 días te voy a pedir que la actualices. No sabes la cantidad de atacantes maliciosos que hay en Internet, como este sitio es público, cualquiera que tenga la URL www.pinchilas.com puede ingresar. Como la contraseña ya esta vencida no vas a poder seguir navegando hasta hacerlo. 🫣</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="boton-agendar">Actualizar contraseña</button>
+    </form>
+</div>
+{% endblock %}
