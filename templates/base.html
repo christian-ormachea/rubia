@@ -32,9 +32,25 @@
         <div class="footer-divisor"></div>
         <div class="footer-texto">
             <p class="footer-frase">Sé que la idea de este sitio es en parte no hablar, pero si en algún momento querés hacerlo hacelo, no importa la hora ni donde estes. ❣️</p>
-            <p class="footer-firma">Hecho con 💙 por Christian</p>
+            <p class="footer-firma">Hecho con <a href="{% url 'activar_chocolate' %}" class="chocolate-trigger">💙</a> por Christian</p>
             <p class="footer-frase">PD: <i>Si, el logo es Pincho porque why not?</i></p>
         </div>
     </footer>
+
+    <div id="modal-chocolate-fondo" class="modal-fondo" onclick="if(event.target.id === 'modal-chocolate-fondo') this.classList.remove('activo')">
+        <div class="modal-caja modal-chocolate-caja">
+            <button type="button" class="modal-cerrar" onclick="document.getElementById('modal-chocolate-fondo').classList.remove('activo')">&times;</button>
+            <h3>🍫 ¡Encontraste la sorpresa!</h3>
+            <img src="https://felfort.com.ar/wp-content/uploads/2026/07/1430_Suelto.jpg" alt="Chocolate Felfort" class="chocolate-imagen">
+            <p>Encontraste el primer secreto del sitio 👀. Como premio, te debo un Felfort de estos la próxima vez que nos veamos. (Saca una captura a este mensaje asi se que lo encontraste, porque no va a volver a aparecer jejej)</p>
+        </div>
+    </div>
+
+    {% if mostrar_chocolate_ahora %}
+        <script>
+            document.getElementById('modal-chocolate-fondo').classList.add('activo');
+        </script>
+    {% endif %}
+
 </body>
 </html>

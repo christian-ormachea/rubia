@@ -7,6 +7,10 @@ from citas.models import Cita
 from notas.models import Nota
 from .models import Mensaje, PreferenciaUsuario
 
+from django.contrib.auth import update_session_auth_hash
+from django.utils import timezone
+from .forms import CambiarContrasenaForm
+
 DIAS_SEMANA = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
 
 
@@ -48,3 +52,30 @@ def guardar_preferencia_popup(request):
             preferencia.oculto_popup_bienvenida = True
             preferencia.save()
     return redirect('inicio')
+
+@login_required
+def cambiar_contrasena_forzado(request):
+    preferencia, _ = PreferenciaUsuario.objects.get_or_create(usuario=request.user)
+
+    if request.method == 'POST':
+        form = CambiarContrasenaForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            preferencia.contrasena_cambiada_en = timezone.now()
+            preferencia.save()
+            return redirect('inicio')
+    else:
+        form = CambiarContrasenaForm(request.user)
+
+    return render(request, 'mensajes/cambiar_contrasena.html', {'form': form})
+
+@login_required
+def activar_chocolate(request):
+    if not request.user.is_superuser:
+        preferencia, _ = PreferenciaUsuario.objects.get_or_create(usuario=request.user)
+        if not preferencia.chocolate_visto:
+            preferencia.chocolate_visto = True
+            preferencia.save()
+            request.session['mostrar_chocolate'] = True
+    return redirect(request.META.get('HTTP_REFERER', 'inicio'))
